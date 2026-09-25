@@ -1,59 +1,40 @@
 #include <iostream>
 #include "external/httplib.h"
+#include "rooms.hpp"
+#include "users.hpp"
 
 int socket_main() {
-    httplib::Server 
-server;
+    httplib::Server server;
 
-    // Test endpoint
+    // PingPong
     server.Get("/ping", [](const httplib::Request&, httplib::Response& res) {
         res.set_content(
-            R"({"success":true,"message":"pong"})",
-            "application/json"
+            "pong",
+            "text/plain"
         );
     });
 
-    // Example database command
-    server.Get("/get", [](const httplib::Request& req,
+    // New Room
+    server.Get("/newroom", [](const httplib::Request&,
                           httplib::Response& res) {
 
-        if (!req.has_param("key")) {
-            res.status = 400;
-            res.set_content(
-                R"({"success":false,"error":"Missing key"})",
-                "application/json"
-            );
-            return;
-        }
-
-        std::string key = req.get_param_value("key");
-
-        // TODO: Call your database here
-        //
-        // auto value = database.get(key);
-
-        std::cout << "GET: " << key << '\n';
+        auto roomid = newRoom();
 
         res.set_content(
-            R"({"success":true})",
-            "application/json"
+            roomid,
+            "text/plain"
         );
     });
 
-    // Example POST command
-    server.Post("/insert", [](const httplib::Request& req,
-                              httplib::Response& res) {
+    // New Log-on
+    server.Post("/newuser", [](const httplib::Request& req,
+                          httplib::Response& res) {
 
-        std::cout << "INSERT request received\n";
-        std::cout << req.body << '\n';
-
-        // TODO:
-        // Parse req.body as JSON
-        // Call your database's insert function
+        auto uid = newUser(req.body);
 
         res.set_content(
-            R"({"success":true})",
-            "application/json"
+            uid,
+            "text/plain"
         );
     });
 

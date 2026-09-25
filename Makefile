@@ -32,7 +32,7 @@ SRC_DIR := src
 BUILD_DIR := build
 BIN_DIR := bin
 
-TARGET := $(BIN_DIR)/crypto$(EXE)
+TARGET := $(BIN_DIR)/db$(EXE)
 
 
 # ------------------------------------------------------------
